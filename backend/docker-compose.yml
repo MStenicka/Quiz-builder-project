@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mysql:
+    container_name: mysql_container
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=quizBuilder
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - mysql
+    restart: unless-stopped
+
+  workbench:
+    container_name: workbench_container
+    image: linuxserver/mysql-workbench
+    environment:
+      DISPLAY: host.docker.internal:0
+    volumes:
+      - workbench:/root/.mysql/workbench
+    depends_on:
+      - mysql
+    ports:
+      - "5050:80"
+    networks:
+      - mysql
+    restart: unless-stopped
+
+networks:
+  mysql:
+    driver: bridge
+
+volumes:
+  mysql:
+  workbench:

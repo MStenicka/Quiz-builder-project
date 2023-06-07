@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'jacoco'
+}
+
+group = 'com.ateam'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'io.jsonwebtoken:jjwt-root:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'org.apache.commons:commons-lang3:3.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testng:testng:7.1.0'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.github.cdimascio:dotenv-java:2.3.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+// Generates code coverage report for the test task.
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+// Verifies code coverage metrics based on specified rules for the test task.
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.35
+            }
+        }
+    }
+}
